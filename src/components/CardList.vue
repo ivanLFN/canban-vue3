@@ -4,6 +4,29 @@
     @drop="onDrop($event, options.id)"
     @dragover.prevent
     @dragenter.prevent>
+    <div class="sort-container">
+      <v-btn
+        icon=""
+        density="compact"
+        variant="tonal"
+        class="mdi mdi-sort-variant me-2"
+        color="white"
+        @click="sortListDescending" />
+      <v-btn
+        icon=""
+        density="compact"
+        variant="tonal"
+        class="mdi mdi-sort-reverse-variant me-2"
+        color="white"
+        @click="sortListAscending" />
+        <v-btn
+        icon=""
+        density="compact"
+        variant="tonal"
+        class="mdi mdi-sort-alphabetical-ascending me-2"
+        color="white"
+        @click="sortListByName" />
+    </div>
     <div class="title">
       <h2>
         {{ options.title }}
@@ -12,12 +35,6 @@
         <span>{{ cards.length }}</span>
       </div>
     </div>
-    <v-btn
-      icon="mdi-plus"
-      variant="tonal"
-      class="mt-5"
-      color="white"
-      @click="isNewCardDialogOpen = true" />
 
     <CardItem
       v-for="(card, index) in cards"
@@ -26,7 +43,7 @@
       :card="card"
       :options="props.options"
       @delete-card="deleteCard(card.id)"
-      @dragstart="onDragStart($event, card)" />
+      @dragstart="onDragStart($event, card)"  />
 
     <CardForm
       title="Добавление новой карточки"
@@ -129,6 +146,21 @@
         break;
     }
   }
+
+  function sortListDescending() {
+    getLocalCards();
+    cards.value = cards.value.sort((a, b) => b.rating.rate - a.rating.rate);
+  }
+
+  function sortListAscending() {
+    getLocalCards();
+    cards.value = cards.value.sort((a, b) => a.rating.rate - b.rating.rate);
+  }
+
+  function sortListByName() {
+    getLocalCards();
+    cards.value = cards.value.sort((a, b) => a.title.localeCompare(b.title));
+  }
 </script>
 
 <style lang="scss" scoped>
@@ -142,6 +174,7 @@
     flex-direction: column;
     align-items: center;
     .title {
+      padding-top: 20px;
       padding-bottom: 10px;
       width: 90%;
       display: flex;
@@ -158,6 +191,11 @@
         justify-content: center;
         align-items: center;
       }
+    }
+    .sort-container {
+      width: 100%;
+      display: flex;
+      justify-content: flex-end;
     }
   }
 </style>
